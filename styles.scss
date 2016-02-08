@@ -1,3 +1,34 @@
-body {
-	color: red;
+$color-theme: hsl(30, 100%, 46%);
+$color-dark: hsl(36, 4%, 24%);
+$color-light: hsla(36, 4%, 24%, 0.1);
+
+#page-wrapper {
+	width: 100%;
+	height: 100vh;
+	#title {
+		width: 100%;
+		text-align: center;
+		font: bold 40px 'Open Sans';
+		color: $color-dark;
+		span {
+			border-bottom: 5px solid $color-theme;
+		}
+	}
+	#recipe-box {
+		width: 80%;
+		height: 80%;
+		background-color: lightgrey;
+		border-radius: 20px;
+		margin: 0 auto;
+		position: relative;
+		top: 40px;
+		#recipe-list {
+			height: 100%;
+			background-color: lightgreen;
+		}
+		#recipe-details {
+			height: 100%;
+			background-color: lightskyblue;
+		}
+	}
 }
