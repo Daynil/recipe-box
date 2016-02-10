@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 class App extends React.Component<any, any> {
+	
 	render() {
 		return (
 			<div id="page-wrapper">
@@ -14,7 +15,7 @@ class App extends React.Component<any, any> {
 class RecipeBox extends React.Component<any, any> {
 	render() {
 		return (
-			<div id="recipe-box" className="pure-g">
+			<div id="recipe-box">
 				<RecipeList />
 				<RecipeDetails />
 			</div>
@@ -25,7 +26,19 @@ class RecipeBox extends React.Component<any, any> {
 class RecipeList extends React.Component<any, any> {
 	render() {
 		return (
-			<div id="recipe-list" className="pure-u-1 pure-u-xl-1-4">
+			<div id="recipe-list">
+				<div className="list-item">
+					Borscht
+				</div>
+				<div className="list-item">
+					Chicken Wangs
+				</div>
+				<div className="list-item">
+					Casserole
+				</div>
+				<div className="list-item">
+					Smoothie
+				</div>
 			</div>
 		);
 	}
@@ -34,7 +47,7 @@ class RecipeList extends React.Component<any, any> {
 class RecipeDetails extends React.Component<any, any> {
 	render() {
 		return (
-			<div id="recipe-details" className="pure-u-1 pure-u-xl-3-4">
+			<div id="recipe-details">
 			</div>
 		);
 	}
