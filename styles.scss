@@ -80,6 +80,20 @@ $color-light: hsla(36, 4%, 24%, 0.1);
 			}
 			.ingredient {
 				margin-left: 20px;
+				input {
+					font: normal 20px 'Open Sans';
+					color: $color-dark;
+					margin-left: 10px;
+					outline: none;
+				}
+				.read-only {
+					border: 0px;
+					cursor: pointer;
+				}
+				.editing {
+					border: 0;
+					border-bottom: 2px solid $color-theme;
+				}
 			}
 			/*** Desktop and Tablet ***/
 			@media only screen and (min-width: 768px) {

@@ -28,6 +28,12 @@ class App extends React.Component<any, StateTypes> {
 		this.setState({selectedRecipe: selection});
 	}
 	
+	changeIngred(e, ingredIndex) {
+		let updatedRecipes = this.state.recipes.slice();
+		updatedRecipes[updatedRecipes.indexOf(this.state.selectedRecipe)].ingredients[ingredIndex] = e.target.value;
+		this.setState({recipes: updatedRecipes});
+	}
+	
 	render() {
 		return (
 			<div id="page-wrapper">
@@ -39,7 +45,8 @@ class App extends React.Component<any, StateTypes> {
 						setSelection={(selection) => this.setSelection(selection)} />
 					<RecipeDetails
 						recipes={this.state.recipes}
-						selected={this.state.selectedRecipe} />
+						selected={this.state.selectedRecipe}
+						changeIngred={(e, index) => this.changeIngred(e, index)} />
 				</div>
 			</div>
 		);
@@ -64,11 +71,34 @@ class RecipeList extends React.Component<any, any> {
 
 class RecipeDetails extends React.Component<any, any> {
 	
+	editIngred(e) {
+		e.target.readOnly = false;
+		e.target.className = 'editing';
+	}
+	
+	doneEditing(e) {
+		e.target.readOnly = true;
+		e.target.className = 'read-only';
+	}
+	
+	checkForEnter(e) {
+		if (e.keyCode === 13) this.doneEditing(e);
+	}
+	
 	render() {
 		let selectedRecipe: Recipe = this.props.selected;
 		if (selectedRecipe == null) return <div></div>;
 		let ingredients = selectedRecipe.ingredients.map( (ingredient, index) => {
-				return <div className="ingredient" key={index}>{index+1}. {ingredient}</div>
+				return (
+					<div className="ingredient" key={index}>
+						{index+1}.<input className='read-only'
+										 value={ingredient} readOnly={true} 
+										 onChange={(e) => this.props.changeIngred(e, index)}
+										 onDoubleClick={(e) => this.editIngred(e)}
+										 onBlur={(e) => this.doneEditing(e)}
+										 onKeyDown={(e) => this.checkForEnter(e)}></input>
+					</div>	
+				);
 		});
 		return (
 			<div id="recipe-details">
