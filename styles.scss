@@ -17,6 +17,19 @@ $color-light: hsla(36, 4%, 24%, 0.1);
 			border-bottom: 5px solid $color-theme;
 		}
 	}
+	.button {
+		background-color: $color-theme;
+		color: white;
+		padding: 5px 10px 5px 10px;
+		margin-left: 20px;
+		margin-top: 20px;
+		margin-right: 20px;
+		border-radius: 3px;
+		text-align: center;
+		&:hover {
+			cursor: pointer;
+		}
+	}
 	#recipe-box {
 		width: 40%;
 		height: 80%;
@@ -69,6 +82,15 @@ $color-light: hsla(36, 4%, 24%, 0.1);
 			}
 		}
 		#recipe-details {
+			.read-only {
+				border: 0px;
+				cursor: pointer;
+			}
+			.editing {
+				outline: none;
+				background-color: $color-theme-light;
+				border: 0;
+			}
 			#ingred-title {
 				width: 100%;
 				font-size: 25px;
@@ -78,21 +100,16 @@ $color-light: hsla(36, 4%, 24%, 0.1);
 				margin-bottom: 10px;
 				border-bottom: 1px dashed $color-theme;
 			}
+			#ingred-button {
+				position: relative;
+				top: 15px;
+			}
 			.ingredient {
 				margin-left: 20px;
 				input {
 					font: normal 20px 'Open Sans';
 					color: $color-dark;
 					margin-left: 10px;
-					outline: none;
-				}
-				.read-only {
-					border: 0px;
-					cursor: pointer;
-				}
-				.editing {
-					border: 0;
-					border-bottom: 2px solid $color-theme;
 				}
 			}
 			/*** Desktop and Tablet ***/
