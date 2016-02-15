@@ -42,8 +42,10 @@ class App extends React.Component<any, StateTypes> {
 		this.setState({recipes: updatedRecipes, selectedRecipe: newSelected});
 	}
 	
-	addIngredient() {
-		this.state.recipes[this.state.recipes.indexOf(this.state.selectedRecipe)].ingredients.push('');
+	addIngredient(e) {
+		let activeIngredList = this.state.recipes[this.state.recipes.indexOf(this.state.selectedRecipe)].ingredients;
+		for (let i = 0; i < activeIngredList.length; i++) if (activeIngredList[i] == '') return;
+		activeIngredList.push('');
 		this.setState({recipes: this.state.recipes});
 	}
 	
@@ -72,7 +74,7 @@ class App extends React.Component<any, StateTypes> {
 				selected={this.state.selectedRecipe}
 				changeIngred={(e, index) => this.changeIngred(e, index)}
 				changeName={(e) => this.changeName(e)}
-				addIngredient={(e) => this.addIngredient()}
+				addIngredient={(e) => this.addIngredient(e)}
 				removeIngredient={(e, index) => this.removeIngredient(e, index)}
 				removeRecipe={(e, recipe) => this.removeRecipe(e, recipe)} />
 		);
@@ -160,7 +162,7 @@ class RecipeDetails extends React.Component<any, any> {
 				this.refList[i].className = 'editing';
 				this.refList[i].focus();
 				this.refList[i].select();
-				return;
+				break;
 			}
 		}
 	}
@@ -180,11 +182,6 @@ class RecipeDetails extends React.Component<any, any> {
 	
 	checkForEnter(e) {
 		if (e.keyCode === 13) this.doneEditing(e);
-	}
-	
-	getIngredRemoveButton() {
-		let className = 'fa fa-times';
-		
 	}
 	
 	render() {
@@ -220,7 +217,7 @@ class RecipeDetails extends React.Component<any, any> {
 				</div>
 				{ingredients}
 				<span className='button' id='ingred-button'
-					  onClick={(e) => this.props.addIngredient()}>Add Ingredient</span>
+					  onClick={(e) => this.props.addIngredient(e)}>Add Ingredient</span>
 			</div>
 		);
 	}
