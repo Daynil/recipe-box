@@ -100,6 +100,19 @@ $color-light: hsla(36, 4%, 24%, 0.1);
 				margin-bottom: 10px;
 				border-bottom: 1px dashed $color-theme;
 			}
+			.delete-recipe {
+				visibility: hidden;
+				color: $color-theme;
+				cursor: pointer;
+				position: relative;
+				float: right;
+				right: 30px;
+				bottom: 51px;
+				font-size: 30px;
+			}
+			.recipe-title:hover i {
+				visibility: visible;
+			}
 			#ingred-button {
 				position: relative;
 				top: 15px;
@@ -110,6 +123,14 @@ $color-light: hsla(36, 4%, 24%, 0.1);
 					font: normal 20px 'Open Sans';
 					color: $color-dark;
 					margin-left: 10px;
+				}
+				i {
+					visibility: hidden;
+					color: $color-theme;
+				}
+				&:hover i{
+					visibility: visible;
+					cursor: pointer;
 				}
 			}
 			/*** Desktop and Tablet ***/

@@ -53,6 +53,17 @@ class App extends React.Component<any, StateTypes> {
 		this.setState({recipes: this.state.recipes, selectedRecipe: newRecipe});
 	}
 	
+	removeIngredient(e, index) {
+		this.state.recipes[this.state.recipes.indexOf(this.state.selectedRecipe)].ingredients.splice(index, 1);
+		this.setState({recipes: this.state.recipes});
+	}
+	
+	removeRecipe(e, recipe) {
+		let indexToRemove = this.state.recipes.indexOf(this.state.selectedRecipe);
+		this.state.recipes.splice(indexToRemove, 1);
+		this.setState({recipes: this.state.recipes, selectedRecipe: null});
+	}
+	
 	render() {
 		let details;
 		if (this.state.selectedRecipe == null) details = <div></div>;
@@ -61,7 +72,9 @@ class App extends React.Component<any, StateTypes> {
 				selected={this.state.selectedRecipe}
 				changeIngred={(e, index) => this.changeIngred(e, index)}
 				changeName={(e) => this.changeName(e)}
-				addIngredient={(e) => this.addIngredient()} />
+				addIngredient={(e) => this.addIngredient()}
+				removeIngredient={(e, index) => this.removeIngredient(e, index)}
+				removeRecipe={(e, recipe) => this.removeRecipe(e, recipe)} />
 		);
 		return (
 			<div id="page-wrapper">
@@ -167,31 +180,42 @@ class RecipeDetails extends React.Component<any, any> {
 		if (e.keyCode === 13) this.doneEditing(e);
 	}
 	
+	getIngredRemoveButton() {
+		let className = 'fa fa-times';
+		
+	}
+	
 	render() {
 		let selectedRecipe: Recipe = this.props.selected;
 		let ingredients = selectedRecipe.ingredients.map( (ingredient, index) => {
 			return (
 				<div className="ingredient" key={index}>
 					{index+1}.<input className='read-only'
-										value={ingredient} readOnly={true} 
-										ref={(ref) => this.refList.push(ref)}
-										onChange={(e) => this.props.changeIngred(e, index)}
-										onDoubleClick={(e) => this.editIngred(e)}
-										onBlur={(e) => this.doneEditing(e)}
-										onKeyDown={(e) => this.checkForEnter(e)}></input>
+									 value={ingredient} readOnly={true} 
+									 ref={(ref) => this.refList.push(ref)}
+									 onChange={(e) => this.props.changeIngred(e, index)}
+									 onDoubleClick={(e) => this.editIngred(e)}
+									 onBlur={(e) => this.doneEditing(e)}
+									 onKeyDown={(e) => this.checkForEnter(e)}></input>
+							  <i className='fa fa-times'
+							  	 onClick={(e) => this.props.removeIngredient(e, index)}></i>
 				</div>	
 			);
 		});
 		return (
 			<div id="recipe-details">
-				<input id="ingred-title"
-					   className='read-only'
-					   ref={(ref) => this.titleRef = ref}
-					   value={this.props.selected.name} readOnly={true}
-					   onChange={(e) => this.props.changeName(e)}
-					   onDoubleClick={(e) => this.editIngred(e)}
-					   onBlur={(e) => this.doneEditing(e)}
-					   onKeyDown={(e) => this.checkForEnter(e)}></input>
+				<div className='recipe-title'>
+					<input id="ingred-title"
+						className='read-only'
+						ref={(ref) => this.titleRef = ref}
+						value={this.props.selected.name} readOnly={true}
+						onChange={(e) => this.props.changeName(e)}
+						onDoubleClick={(e) => this.editIngred(e)}
+						onBlur={(e) => this.doneEditing(e)}
+						onKeyDown={(e) => this.checkForEnter(e)}></input>
+					<i className='fa fa-times delete-recipe'
+					onClick={(e) => this.props.removeRecipe(e)}></i>
+				</div>
 				{ingredients}
 				<span className='button' id='ingred-button'
 					  onClick={(e) => this.props.addIngredient()}>Add Ingredient</span>
