@@ -168,6 +168,8 @@ class RecipeDetails extends React.Component<any, any> {
 	editIngred(e) {
 		e.target.readOnly = false;
 		e.target.className = 'editing';
+		e.target.focus();
+		e.target.select();
 	}
 	
 	doneEditing(e) {
@@ -194,7 +196,7 @@ class RecipeDetails extends React.Component<any, any> {
 									 value={ingredient} readOnly={true} 
 									 ref={(ref) => this.refList.push(ref)}
 									 onChange={(e) => this.props.changeIngred(e, index)}
-									 onDoubleClick={(e) => this.editIngred(e)}
+									 onClick={(e) => this.editIngred(e)}
 									 onBlur={(e) => this.doneEditing(e)}
 									 onKeyDown={(e) => this.checkForEnter(e)}></input>
 							  <i className='fa fa-times'
@@ -210,7 +212,7 @@ class RecipeDetails extends React.Component<any, any> {
 						ref={(ref) => this.titleRef = ref}
 						value={this.props.selected.name} readOnly={true}
 						onChange={(e) => this.props.changeName(e)}
-						onDoubleClick={(e) => this.editIngred(e)}
+						onClick={(e) => this.editIngred(e)}
 						onBlur={(e) => this.doneEditing(e)}
 						onKeyDown={(e) => this.checkForEnter(e)}></input>
 					<i className='fa fa-times delete-recipe'
