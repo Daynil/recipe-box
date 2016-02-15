@@ -43,16 +43,26 @@ class App extends React.Component<any, StateTypes> {
 	}
 	
 	addIngredient() {
-		this.state.recipes[this.state.recipes.indexOf(this.state.selectedRecipe)].ingredients.push(' ');
+		this.state.recipes[this.state.recipes.indexOf(this.state.selectedRecipe)].ingredients.push('');
 		this.setState({recipes: this.state.recipes});
 	}
 	
 	addRecipe() {
-		this.state.recipes.push(new Recipe('', ['']));
-		this.setState({recipes: this.state.recipes});
+		let newRecipe = new Recipe('New Recipe', ['First ingredient']);
+		this.state.recipes.push(newRecipe);
+		this.setState({recipes: this.state.recipes, selectedRecipe: newRecipe});
 	}
 	
 	render() {
+		let details;
+		if (this.state.selectedRecipe == null) details = <div></div>;
+		else details = (
+			<RecipeDetails
+				selected={this.state.selectedRecipe}
+				changeIngred={(e, index) => this.changeIngred(e, index)}
+				changeName={(e) => this.changeName(e)}
+				addIngredient={(e) => this.addIngredient()} />
+		);
 		return (
 			<div id="page-wrapper">
 				<div id="title"><span>Recipe Box</span></div>
@@ -60,14 +70,9 @@ class App extends React.Component<any, StateTypes> {
 					<RecipeList
 						recipes={this.state.recipes}
 						selected={this.state.selectedRecipe}
-						setSelection={(selection) => this.setSelection(selection)} />
-					<RecipeDetails
-						recipes={this.state.recipes}
-						selected={this.state.selectedRecipe}
-						changeIngred={(e, index) => this.changeIngred(e, index)}
-						changeName={(e) => this.changeName(e)}
-						addIngredient={(e) => this.addIngredient()}
+						setSelection={(selection) => this.setSelection(selection)}
 						addRecipe={(e) => this.addRecipe()} />
+					{details}
 				</div>
 			</div>
 		);
@@ -75,9 +80,17 @@ class App extends React.Component<any, StateTypes> {
 }
 
 class RecipeList extends React.Component<any, any> {
+	refList = [];
+	
+	componentWillUpdate() {
+		//Clear ref list prior to each render, new ones will be populated on render
+		this.refList = [];
+	}
+	
 	render() {
 		let recipes = this.props.recipes.map( (recipe: Recipe, index) => {
 			return <div className={(this.props.selected == recipe) ? 'list-item selected' : 'list-item'}
+						ref={(ref) => this.refList.push(ref)}
 						key={index}
 						onClick={() => this.props.setSelection(recipe)}>{recipe.name}</div>
 		});
@@ -85,7 +98,7 @@ class RecipeList extends React.Component<any, any> {
 			<div id="recipe-list">
 				<div id="recipe-title">Recipes</div>
 				{recipes}
-				<span className='button'>Add Recipe</span>
+				<span className='button' onClick={(e) => this.props.addRecipe()}>Add Recipe</span>
 			</div>
 		);
 	}
@@ -93,15 +106,50 @@ class RecipeList extends React.Component<any, any> {
 
 class RecipeDetails extends React.Component<any, any> {
 	refList = [];
+	titleRef;
+
+	componentDidMount() {
+		this.checkForNewRecipesAndFocus();
+	}
 	
 	componentWillUpdate() {
+		//Clear ref list prior to each render, new ones will be populated on render
 		this.refList = [];
+		this.titleRef = null;
 	}
-
+	
 	componentDidUpdate() {
-		this.refList.forEach( ref => {
-			console.log('read ref:', ref);
-		});
+		if (this.titleRef.readOnly === false) return; // Don't refocus until we're done editing
+		if (this.checkForNewRecipesAndFocus()) return;
+		for (let i = this.refList.length-1; i >= 0; i--) {
+			if (this.refList[i] == null) {
+				this.refList.splice(i, 1);
+				continue;
+			}
+		}
+		this.checkEmptyIngredsAndFocus();
+	}
+	
+	checkForNewRecipesAndFocus(): boolean {
+		if (this.props.selected.name == 'New Recipe') {
+			this.titleRef.readOnly = false;
+			this.titleRef.className = 'editing';
+			this.titleRef.focus();
+			this.titleRef.select();
+			return true;
+		}
+	}
+	
+	checkEmptyIngredsAndFocus() {
+		for (let i = this.refList.length-1; i >= 0; i--) {
+			if (this.refList[i].value == '' || this.refList[i].value == 'First ingredient') {
+				this.refList[i].readOnly = false;
+				this.refList[i].className = 'editing';
+				this.refList[i].focus();
+				this.refList[i].select();
+				return;
+			}
+		}
 	}
 	
 	editIngred(e) {
@@ -112,38 +160,33 @@ class RecipeDetails extends React.Component<any, any> {
 	doneEditing(e) {
 		e.target.readOnly = true;
 		e.target.className = 'read-only';
+		this.checkEmptyIngredsAndFocus();
 	}
 	
 	checkForEnter(e) {
 		if (e.keyCode === 13) this.doneEditing(e);
 	}
 	
-	shouldFocus(index) {
-		if (this.props.selected.ingredients[index] == '') return true;
-		return false;
-	}
-	
 	render() {
 		let selectedRecipe: Recipe = this.props.selected;
-		if (selectedRecipe == null) return <div></div>;
 		let ingredients = selectedRecipe.ingredients.map( (ingredient, index) => {
-				return (
-					<div className="ingredient" key={index}>
-						{index+1}.<input className='read-only'
-										 value={ingredient} readOnly={true} 
-										 ref={(ref) => this.refList.push(ref)}
-										 onChange={(e) => this.props.changeIngred(e, index)}
-										 onDoubleClick={(e) => this.editIngred(e)}
-										 onBlur={(e) => this.doneEditing(e)}
-										 autoFocus={this.shouldFocus(index)}
-										 onKeyDown={(e) => this.checkForEnter(e)}></input>
-					</div>	
-				);
+			return (
+				<div className="ingredient" key={index}>
+					{index+1}.<input className='read-only'
+										value={ingredient} readOnly={true} 
+										ref={(ref) => this.refList.push(ref)}
+										onChange={(e) => this.props.changeIngred(e, index)}
+										onDoubleClick={(e) => this.editIngred(e)}
+										onBlur={(e) => this.doneEditing(e)}
+										onKeyDown={(e) => this.checkForEnter(e)}></input>
+				</div>	
+			);
 		});
 		return (
 			<div id="recipe-details">
 				<input id="ingred-title"
 					   className='read-only'
+					   ref={(ref) => this.titleRef = ref}
 					   value={this.props.selected.name} readOnly={true}
 					   onChange={(e) => this.props.changeName(e)}
 					   onDoubleClick={(e) => this.editIngred(e)}
