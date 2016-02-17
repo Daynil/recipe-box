@@ -17,10 +17,10 @@ class App extends React.Component<any, StateTypes> {
 	
 	componentWillMount() {
 		let startRecipes: Recipe[] = [];
-		startRecipes.push(new Recipe('Borscht', ['Beets', 'Water', 'Lamb', 'Sour Cream']));
+		startRecipes.push(new Recipe('Borscht', ['Beets', 'Beef Broth', 'Lamb', 'Sour Cream', 'Garlic', 'Tomato Paste', 'Diced Tomatoes']));
 		startRecipes.push(new Recipe('BBQ Wings', ['Chicken wings', 'BBQ sauce']));
-		startRecipes.push(new Recipe('Shephard\'s Pie', ['Ground Beef', 'Potatoes', 'Carrots', 'Onions', 'Salt', 'Pepper']));
-		startRecipes.push(new Recipe('Protein Shake', ['Milk', 'Protein Powder', 'Spinach']));
+		startRecipes.push(new Recipe('Shephard\'s Pie', ['Ground Beef', 'Sweet Potatoes', 'Carrots', 'Onions', 'Salt', 'Pepper']));
+		startRecipes.push(new Recipe('Power Shake', ['Milk', 'Protein Powder', 'Spinach', 'Ice Cubes', 'Blueberries']));
 		this.setState({recipes: startRecipes});
 	}
 	
@@ -68,7 +68,7 @@ class App extends React.Component<any, StateTypes> {
 	
 	render() {
 		let details;
-		if (this.state.selectedRecipe == null) details = <div></div>;
+		if (this.state.selectedRecipe == null) details = null;
 		else details = (
 			<RecipeDetails
 				selected={this.state.selectedRecipe}
@@ -79,15 +79,17 @@ class App extends React.Component<any, StateTypes> {
 				removeRecipe={(e, recipe) => this.removeRecipe(e, recipe)} />
 		);
 		return (
-			<div id="page-wrapper">
-				<div id="title"><span>Recipe Box</span></div>
-				<div id="recipe-box">
-					<RecipeList
-						recipes={this.state.recipes}
-						selected={this.state.selectedRecipe}
-						setSelection={(selection) => this.setSelection(selection)}
-						addRecipe={(e) => this.addRecipe()} />
-					{details}
+			<div>
+				<div id="page-wrapper">
+					<div id="title"><span id="title-text">Recipe Box</span><Foot /></div>
+					<div id="recipe-box">
+						<RecipeList
+							recipes={this.state.recipes}
+							selected={this.state.selectedRecipe}
+							setSelection={(selection) => this.setSelection(selection)}
+							addRecipe={(e) => this.addRecipe()} />
+						{details}
+					</div>
 				</div>
 			</div>
 		);
@@ -225,6 +227,21 @@ class RecipeDetails extends React.Component<any, any> {
 
 class Recipe {
 	constructor(public name: string, public ingredients: string[]) { }
+}
+
+class Foot extends React.Component<any, any> {
+	render() {
+		return (
+			<div id="foot">
+				<a id="gh-link" href="https://github.com/Daynil/recipe-box">
+					<i className="fa fa-github-square fa-lg"></i>
+				</a>
+				<div id="foot-text">
+					By <a href="https://github.com/Daynil/">Daynil</a> for <a href="http://www.freecodecamp.com/">FCC</a>
+				</div>
+			</div>
+		);
+	}
 }
 
 export default App;
