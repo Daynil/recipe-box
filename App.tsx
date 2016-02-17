@@ -19,7 +19,7 @@ class App extends React.Component<any, StateTypes> {
 		// Try to find cached recipes first, else add defualts
 		let storedRecipes = localStorage['recipes'];
 		console.log(storedRecipes);
-		if (storedRecipes != 'null') {
+		if (storedRecipes && storedRecipes != 'null') {
 			let storedRecipesParsed = JSON.parse(storedRecipes);
 			this.setState({recipes: storedRecipesParsed});
 		} else {
