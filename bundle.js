@@ -19675,7 +19675,7 @@
 	        // Try to find cached recipes first, else add defualts
 	        var storedRecipes = localStorage['recipes'];
 	        console.log(storedRecipes);
-	        if (storedRecipes != 'null') {
+	        if (storedRecipes && storedRecipes != 'null') {
 	            var storedRecipesParsed = JSON.parse(storedRecipes);
 	            this.setState({ recipes: storedRecipesParsed });
 	        }
