@@ -19672,12 +19672,22 @@
 	        };
 	    }
 	    App.prototype.componentWillMount = function () {
-	        var startRecipes = [];
-	        startRecipes.push(new Recipe('Borscht', ['Beets', 'Beef Broth', 'Lamb', 'Sour Cream', 'Garlic', 'Tomato Paste', 'Diced Tomatoes']));
-	        startRecipes.push(new Recipe('BBQ Wings', ['Chicken wings', 'BBQ sauce']));
-	        startRecipes.push(new Recipe('Shephard\'s Pie', ['Ground Beef', 'Sweet Potatoes', 'Carrots', 'Onions', 'Salt', 'Pepper']));
-	        startRecipes.push(new Recipe('Power Shake', ['Milk', 'Protein Powder', 'Spinach', 'Ice Cubes', 'Blueberries']));
-	        this.setState({ recipes: startRecipes });
+	        // Try to find cached recipes first, else add defualts
+	        var storedRecipes = localStorage['recipes'];
+	        console.log(storedRecipes);
+	        if (storedRecipes != 'null') {
+	            var storedRecipesParsed = JSON.parse(storedRecipes);
+	            this.setState({ recipes: storedRecipesParsed });
+	        }
+	        else {
+	            var startRecipes = [];
+	            startRecipes.push(new Recipe('Borscht', ['Beets', 'Beef Broth', 'Lamb', 'Sour Cream', 'Garlic', 'Tomato Paste', 'Diced Tomatoes']));
+	            startRecipes.push(new Recipe('BBQ Wings', ['Chicken wings', 'BBQ sauce']));
+	            startRecipes.push(new Recipe('Shephard\'s Pie', ['Ground Beef', 'Sweet Potatoes', 'Carrots', 'Onions', 'Salt', 'Pepper']));
+	            startRecipes.push(new Recipe('Power Shake', ['Milk', 'Protein Powder', 'Spinach', 'Ice Cubes', 'Blueberries']));
+	            localStorage['recipes'] = JSON.stringify(startRecipes);
+	            this.setState({ recipes: startRecipes });
+	        }
 	    };
 	    App.prototype.setSelection = function (selection) {
 	        this.setState({ selectedRecipe: selection });
@@ -19685,6 +19695,7 @@
 	    App.prototype.changeIngred = function (e, ingredIndex) {
 	        var updatedRecipes = this.state.recipes.slice();
 	        updatedRecipes[updatedRecipes.indexOf(this.state.selectedRecipe)].ingredients[ingredIndex] = e.target.value;
+	        localStorage['recipes'] = JSON.stringify(updatedRecipes);
 	        this.setState({ recipes: updatedRecipes });
 	    };
 	    App.prototype.changeName = function (e) {
@@ -19692,6 +19703,7 @@
 	        var newSelected = this.state.selectedRecipe;
 	        newSelected.name = e.target.value;
 	        updatedRecipes[updatedRecipes.indexOf(this.state.selectedRecipe)].name = e.target.value;
+	        localStorage['recipes'] = JSON.stringify(updatedRecipes);
 	        this.setState({ recipes: updatedRecipes, selectedRecipe: newSelected });
 	    };
 	    App.prototype.addIngredient = function (e) {
@@ -19700,20 +19712,24 @@
 	            if (activeIngredList[i] == '')
 	                return;
 	        activeIngredList.push('');
+	        localStorage['recipes'] = JSON.stringify(this.state.recipes);
 	        this.setState({ recipes: this.state.recipes });
 	    };
 	    App.prototype.addRecipe = function () {
 	        var newRecipe = new Recipe('New Recipe', ['First ingredient']);
 	        this.state.recipes.push(newRecipe);
+	        localStorage['recipes'] = JSON.stringify(this.state.recipes);
 	        this.setState({ recipes: this.state.recipes, selectedRecipe: newRecipe });
 	    };
 	    App.prototype.removeIngredient = function (e, index) {
 	        this.state.recipes[this.state.recipes.indexOf(this.state.selectedRecipe)].ingredients.splice(index, 1);
+	        localStorage['recipes'] = JSON.stringify(this.state.recipes);
 	        this.setState({ recipes: this.state.recipes });
 	    };
 	    App.prototype.removeRecipe = function (e, recipe) {
 	        var indexToRemove = this.state.recipes.indexOf(this.state.selectedRecipe);
 	        this.state.recipes.splice(indexToRemove, 1);
+	        localStorage['recipes'] = JSON.stringify(this.state.recipes);
 	        this.setState({ recipes: this.state.recipes, selectedRecipe: null });
 	    };
 	    App.prototype.render = function () {
